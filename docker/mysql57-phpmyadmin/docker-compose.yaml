@@ -1,0 +1,43 @@
+version: "3.8" # Defines which compose version to use
+
+services:
+    # Services line define which Docker images to run. In this case, it will be MySQL server and WordPress image.
+    db:
+        image: bitnami/mysql:5.7
+        # image: mysql:5.7 indicates the MySQL database container image from Docker Hub used in this installation.
+        volumes:
+            - mysql-data:/bitnami/mysql/data # left is describe location on the host: right location inside container
+        restart: always
+        environment:
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - MYSQL_DATABASE=${MYSQL_DATABASE}
+            - MYSQL_USER=${MYSQL_USER}
+            - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+        networks:
+            - db-1
+
+    phpmyadmin:
+        image: phpmyadmin
+        restart: always
+        depends_on:
+            - db
+        volumes:
+            - /sessions # persistant sessions
+        ports:
+            - 8080:80 # default port mapping
+        environment:
+            # all possible evn variables could be found on https://hub.docker.com/_/phpmyadmin
+            PMA_ARBITRARY: 1
+            PMA_HOST: db
+            PMA_PORT: 3306
+        networks:
+            - db-1
+
+volumes:
+    mysql-data:
+    pgadmin-data:
+
+
+networks:
+    db-1:
+        driver: bridge

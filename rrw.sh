@@ -19,6 +19,11 @@ find . -type f | while read -r file; do
         continue
     fi
 
+    # Check if the file is ignored by .gitignore
+    if git check-ignore -q "$file"; then
+        continue
+    fi
+
     # Get the relative path and determine if it's in the current directory or nested
     relative_path="${file#./}"
 

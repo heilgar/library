@@ -1,5 +1,7 @@
 #!/bin/bash
 
+VERSION="1.2.0"
+
 # Initialize empty array for ignore patterns
 declare -a ignore_patterns=(".git/")
 
@@ -9,7 +11,13 @@ show_usage() {
     echo "Options:"
     echo "  -i, --ignore PATTERN   Specify patterns to ignore (can be used multiple times)"
     echo "                         Example: -i '.git/' -i '*.log' -i 'dist/'"
+    echo "  -v, --version         Show version information"
     exit 1
+}
+
+show_version() {
+    echo "rrw version $VERSION"
+    exit 0
 }
 
 
@@ -42,6 +50,9 @@ while [[ $# -gt 0 ]]; do
             fi
             ignore_patterns+=("$2")
             shift 2
+            ;;
+        -v|--version)
+            show_version
             ;;
         -h|--help)
             show_usage
